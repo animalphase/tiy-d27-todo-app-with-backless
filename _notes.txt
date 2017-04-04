@@ -1,0 +1,23 @@
+
+
+
+task app planning
+
+
+state:
+- user session
+  - username
+- todo items (array of Todos)
+
+
+
+models:
+- Todo
+  - description
+  - completed
+
+
+views
+- login view
+- todo list view
+- todo item
