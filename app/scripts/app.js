@@ -3,6 +3,8 @@
 
 import { createStore } from 'redux';
 import loginView from './view-login.js';
+import todosLoadingView from './view-loading-todo-app.js';
+import todosView from './view-todos.js';
 // import ajax from './ajax.js';
 // import loadingMenuView from './view-loading-menu.js';
 // import menuView from './view-menu.js';
@@ -38,6 +40,9 @@ export default function app() {
 
 
       case 'LOGIN':
+        var newState = {
+          view: todosLoadingView
+        };
         let retrievedUserToken;
         console.log('>>> logging in >>>');
         $.ajax({
@@ -59,28 +64,44 @@ export default function app() {
           retrievedUserToken = data['user-token'];
           console.log(retrievedUserToken);
           store.dispatch({
-            type: "AUTHENTICATE_USER",
+            type: "LOAD_TODO_VIEW",
             userToken: data['user-token'],
-            displayName: data.name });
+            displayName: data.name
+          });
         });
-        return currentState;
-
-
-      case 'AUTHENTICATE_USER':
-        var newState = {
-          userToken: action.userToken,
-          displayName: action.displayName
-        };
-        console.log(newState);
         return Object.assign({}, currentState, newState);
 
 
-      case 'LOAD_TASKS':
-        // load tasks from backendless
-        return currentState;
+        case 'LOAD_TODO_VIEW':
+          var newState = {
+            session: { userToken: action.userToken },
+            displayName: action.displayName
+          };
+          console.log(`user "${newState.displayName}" authenticated`, newState);
+          console.log('loading tasks…');
+          $.ajax({
+            url: "https://api.backendless.com/v1/data/Todos",
+            method: "GET",
+            headers: {
+              "application-id": "068B64E1-D886-AE57-FF06-C235EB26B100",
+              "secret-key": "F05CCB9A-CF37-CDDE-FF5F-B90BE8657D00",
+              "user-token": newState.session.userToken
+            }
+          }).then( (data, status, xhr) => {
+            console.log(data);
+            store.dispatch({
+              type: "VIEW_TASKS",
+              todoData: data.data
+            });
+          });
+          return Object.assign({}, currentState, newState);
 
 
       case 'VIEW_TASKS':
+        console.log(`viewing tasks:`, action.todoData);
+        let instancedTodos = action.todoData.map( (todo, i, array) => {
+          
+        });
         var newState = {
         };
         return Object.assign({}, currentState, newState);
