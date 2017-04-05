@@ -26,6 +26,14 @@ export default function app() {
     todos: []
   };
 
+  function Todo(rawData) {
+    this.name = rawData.name;
+    this.description = rawData.description;
+    this.complete = rawData.complete;
+    this.important = rawData.important;
+    this.dueDate = rawData.dueDate;
+  }
+
   const reducer = function (currentState, action) {
     if (currentState === undefined) {
       return initialState;
@@ -99,10 +107,13 @@ export default function app() {
 
       case 'VIEW_TASKS':
         console.log(`viewing tasks:`, action.todoData);
-        let instancedTodos = action.todoData.map( (todo, i, array) => {
-          
+        let instancedTodos = action.todoData.map( (rawTodo, i, array) => {
+          return new Todo (rawTodo);
         });
+        console.log(instancedTodos);
         var newState = {
+          view: todosView,
+          todos: instancedTodos
         };
         return Object.assign({}, currentState, newState);
 
