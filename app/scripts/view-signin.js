@@ -1,4 +1,4 @@
-export default function loginView(store) {
+export default function signInView(store) {
 
   let $viewContent = $(`<section class="page-wrapper view-login">
                           <div class="login">

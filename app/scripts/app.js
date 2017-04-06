@@ -2,7 +2,7 @@
 /* jshint -W004 */
 
 import { createStore } from 'redux';
-import loginView from './view-login.js';
+import signInView from './view-signin.js';
 import todosLoadingView from './view-loading-todo-app.js';
 import todosView from './view-todos.js';
 // import ajax from './ajax.js';
@@ -22,7 +22,7 @@ export default function app() {
       displayName: '',
       userToken: ''
     },
-    view: loginView,
+    view: signInView,
     todos: []
   };
 
@@ -31,7 +31,7 @@ export default function app() {
     this.description = rawData.description;
     this.complete = rawData.complete;
     this.important = rawData.important;
-    this.dueDate = rawData.dueDate;
+    this.dueDate = new Date(rawData.dueDate);
   }
 
   const reducer = function (currentState, action) {
@@ -133,7 +133,6 @@ export default function app() {
   // end reducer()
 
   const store = createStore(reducer);
-  loginView(store);
 
   const render =  function () {
     let state = store.getState();
